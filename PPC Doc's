@@ -1,113 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PPC Analyst - [Your Name]</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f9;
-            color: #333;
-        }
-        header {
-            background-color: #0078d4;
-            color: white;
-            padding: 1em;
-            text-align: center;
-        }
-        header h1 {
-            margin: 0;
-        }
-        section {
-            padding: 2em;
-            margin: 1em;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
-        }
-        h2 {
-            color: #0078d4;
-        }
-        .container {
-            max-width: 800px;
-            margin: auto;
-        }
-        .contact-info, .portfolio {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1em;
-        }
-        .contact-info div, .portfolio div {
-            flex: 1;
-            min-width: 250px;
-        }
-        footer {
-            background-color: #333;
-            color: white;
-            text-align: center;
-            padding: 1em;
-            position: fixed;
-            width: 100%;
-            bottom: 0;
-        }
-    </style>
-</head>
-<body>
+name: Build Jekyll Site
 
-<header>
-    <h1>[Your Name] - PPC Analyst</h1>
-    <p>Driving Conversions, Optimizing Ad Spend, Maximizing ROI</p>
-</header>
+on:
+  push:
+    branches:
+      - main
+  pull_request:
 
-<div class="container">
-    <section>
-        <h2>About Me</h2>
-        <p>Hi! I’m [Your Name], a professional PPC analyst with a focus on data-driven ad campaigns and performance optimization. With years of experience in Google Ads, Bing Ads, and other PPC platforms, I help businesses maximize their online visibility and return on investment.</p>
-    </section>
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-    <section>
-        <h2>Services</h2>
-        <ul>
-            <li>Google Ads Management</li>
-            <li>Bing Ads Optimization</li>
-            <li>Keyword Research & Strategy</li>
-            <li>Conversion Rate Optimization</li>
-            <li>Performance Reporting & Analysis</li>
-        </ul>
-    </section>
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    <section class="portfolio">
-        <h2>Portfolio</h2>
-        <div>
-            <h3>Project 1: [Campaign Name]</h3>
-            <p>A brief description of the campaign, the challenges faced, and the results achieved.</p>
-        </div>
-        <div>
-            <h3>Project 2: [Campaign Name]</h3>
-            <p>A brief description of the campaign, the challenges faced, and the results achieved.</p>
-        </div>
-        <!-- Add more projects as needed -->
-    </section>
+      - name: Create docs directory if it doesn’t exist
+        run: mkdir -p docs
 
-    <section class="contact-info">
-        <h2>Contact Me</h2>
-        <div>
-            <p>Email: [Your Email]</p>
-            <p>Phone: [Your Phone Number]</p>
-            <p>LinkedIn: [Your LinkedIn Profile]</p>
-        </div>
-        <div>
-            <p>Contact me to discuss how we can enhance your online campaigns and reach your marketing goals through effective PPC strategies.</p>
-        </div>
-    </section>
-</div>
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7  # or the version your project requires
 
-<footer>
-    <p>&copy; 2024 [Your Name] - PPC Analyst | All Rights Reserved</p>
-</footer>
+      - name: Install dependencies
+        run: |
+          echo 'gem: --no-document' > ~/.gemrc
+          gem install bundler
+          bundle install
 
-</body>
-</html>
+      - name: Build Jekyll site
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: .
+          destination: ./_site
